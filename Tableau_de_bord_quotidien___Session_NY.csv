@@ -1,0 +1,11 @@
+Heure (heure locale),Action à réaliser,Outils / Liens,Commentaires
+08:00,Check news ForexFactory + Investing (impact NY session),https://www.forexfactory.com/calendar + https://www.investing.com/,"Repérer news USD/WTI, éviter zone rouge"
+08:30,Analyser XBRUSD en H4 + M15,TradingView H4 / M15,Déterminer biais de fond (haussier/baissier)
+09:00,Vérifier RSI & Stochastique (surachat/survente),Indicateur RSI + Stochastique (TradingView ou MT5),Confirmer momentum
+09:30,Observer Ichimoku (position du prix / croisement Tenkan-Kijun / Kumo),Ichimoku complet (Tenkan/Kijun/Kumo/Chikou),Confirmer ou invalider tendance
+10:00,Identifier chandelier clé (M15/M5),Analyse chandeliers japonais (voir PDF),"Rechercher Doji, marteau, engulfing…"
+10:30,Déterminer support/résistance court terme,TradingView + outil horizontal / lignes,Aligner niveaux M15/M5 avec H4
+11:00,Marquer zones de rebond ou cassure potentielles,Zone de confluence + price action,Valider point d'entrée en confluence
+12:00,Placer alertes TradingView + mise en veille graphique,TradingView alertes + visuel graphique,Préparer réactivité à l'ouverture NY
+13:00,Prise de position (si setup complet validé),Broker / prop firm / exécution rapide,"Exécution rapide, plan respecté"
+15:00,Suivi position / gestion SL-TP / clôture partielle,Gestion active via MT5 ou plateforme broker,Ne jamais laisser sans surveillance

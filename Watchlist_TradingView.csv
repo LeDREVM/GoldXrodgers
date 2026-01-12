@@ -1,0 +1,7 @@
+Symbole,Description,Remarques/Utilité
+XBRUSD,Brent Crude Oil,"Indexé en USD, très utilisé pour les signaux techniques"
+USDJPY,Dollar vs Yen,"Corrélé à la force USD, indicateur de risque macro"
+DXY,Dollar Index,"Force du dollar, impacte directement le pétrole"
+JP10Y,Obligations japonaises 10 ans,Corrélée au cuivre et au sentiment risque
+COPPER,Cuivre,"Risque économique global, souvent inverse à JPY"
+CADJPY,Dollar canadien vs Yen,Corrélé à l'USOIL (le CAD étant une monnaie pétrolière)

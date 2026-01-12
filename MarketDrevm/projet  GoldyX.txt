@@ -1,0 +1,27 @@
+google cloud / nom du projet : GoldyXrodgers
+
+id : goldyxrodgers
+numero du projet : 1064471529094
+
+
+
+TELEGRAM : https://t.me/GoldyRogers_bot
+api bot Telegram : 8154117071:AAFHxf4YVlfyF7LHO0DrwueNMFe5kP-Lz8M 
+id : @GoldyRogers_bot
+
+
+
+
+NextcloudConfig:
+    """Configuration Nextcloud Kaflow"""
+    url: str = "https://https://ledream.kflw.io"
+    username: str = "ledream"
+    password: str = ""  # À remplir
+    base_path: str = "/Trading"
+    
+    # Dossiers Nextcloud
+    economic_data_path: str = "/Trading/economic_data"
+    charts_path: str = "/Trading/charts"
+    analyses_path: str = "/Trading/analyses"
+    correlations_path: str = "/Trading/correlations"
+    backups_path: str = "/Trading/backups"

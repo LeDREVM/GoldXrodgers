@@ -1,0 +1,8 @@
+
+services:
+  - type: web
+    name: goldyrogers
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn goldyrogers_dashboard_full:app
+    plan: free

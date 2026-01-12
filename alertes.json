@@ -1,0 +1,17 @@
+[
+  {
+    "type": "SPRING",
+    "pair": "XBRUSD",
+    "time": "2025-05-14 15:30 UTC"
+  },
+  {
+    "type": "UTAD",
+    "pair": "XAUUSD",
+    "time": "2025-05-14 13:05 UTC"
+  },
+  {
+    "type": "SPRING",
+    "pair": "US30",
+    "time": "2025-05-14 10:50 UTC"
+  }
+]

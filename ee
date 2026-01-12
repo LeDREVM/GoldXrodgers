@@ -1,0 +1,522 @@
+"""
+Script pour générer TOUS les fichiers du package BreakZen Ultimate
+Lance ce script pour créer automatiquement tout le projet
+"""
+
+import os
+from pathlib import Path
+
+def create_file(path, content):
+    """Créer fichier avec contenu"""
+    filepath = Path(path)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print(f"✅ Créé: {path}")
+
+# ═══════════════════════════════════════════════════════════════
+# STRUCTURE & FICHIERS
+# ═══════════════════════════════════════════════════════════════
+
+print("🚀 GÉNÉRATION PACKAGE BREAKZEN ULTIMATE\n")
+
+# 1. REQUIREMENTS.TXT
+requirements = """pandas>=2.0.0
+numpy>=1.24.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+webdavclient3>=3.14.6
+MetaTrader5>=5.0.45
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-dotenv>=1.0.0
+pyyaml>=6.0.1
+click>=8.1.7
+tqdm>=4.66.0
+colorama>=0.4.6
+python-telegram-bot>=20.6
+plotly>=5.18.0
+"""
+
+create_file("requirements.txt", requirements)
+
+# 2. CONFIG.PY (Version simplifiée)
+config_py = '''"""Configuration BreakZen Ultimate"""
+
+import json
+from pathlib import Path
+from dataclasses import dataclass
+
+@dataclass
+class BreakZenConfig:
+    """Configuration principale"""
+    
+    risk_percent: float = 1.5
+    max_daily_loss: float = 4.0
+    max_trades_per_day: int = 4
+    
+    nextcloud_url: str = ""
+    nextcloud_user: str = ""
+    nextcloud_pass: str = ""
+    
+    mt5_account: int = 0
+    mt5_password: str = ""
+    mt5_server: str = ""
+    
+    symbols: list = None
+    
+    def __post_init__(self):
+        if self.symbols is None:
+            self.symbols = ["EURUSD", "GBPUSD", "USDJPY", "XAUUSD"]
+        self.load_from_env()
+    
+    def load_from_env(self):
+        """Charger depuis .env"""
+        try:
+            from dotenv import load_dotenv
+            import os
+            load_dotenv()
+            
+            self.nextcloud_url = os.getenv('NEXTCLOUD_URL', '')
+            self.nextcloud_user = os.getenv('NEXTCLOUD_USERNAME', '')
+            self.nextcloud_pass = os.getenv('NEXTCLOUD_PASSWORD', '')
+            
+            self.mt5_account = int(os.getenv('MT5_ACCOUNT', 0))
+            self.mt5_password = os.getenv('MT5_PASSWORD', '')
+            self.mt5_server = os.getenv('MT5_SERVER', '')
+        except:
+            pass
+    
+    def print_summary(self):
+        """Afficher résumé"""
+        print("\\n" + "="*60)
+        print("📊 BREAKZEN ULTIMATE - CONFIGURATION")
+        print("="*60)
+        print(f"\\n🎯 Risk: {self.risk_percent}%")
+        print(f"📉 Max Daily Loss: {self.max_daily_loss}%")
+        print(f"📊 Paires: {', '.join(self.symbols)}")
+        print(f"\\n☁️  Nextcloud: {self.nextcloud_url or 'Non configuré'}")
+        print(f"🤖 MT5: {self.mt5_server or 'Non configuré'}")
+        print("\\n" + "="*60 + "\\n")
+    
+    def get_profile(self, name):
+        """Charger profil"""
+        profiles = {
+            'debutant': {'risk_percent': 0.5, 'max_daily_loss': 2.0},
+            'intermediaire': {'risk_percent': 1.5, 'max_daily_loss': 4.0},
+            'avance': {'risk_percent': 2.5, 'max_daily_loss': 6.0}
+        }
+        
+        if name in profiles:
+            for k, v in profiles[name].items():
+                setattr(self, k, v)
+            print(f"✅ Profil '{name}' chargé")
+'''
+
+create_file("config.py", config_py)
+
+# 3. MAIN.PY
+main_py = '''"""BreakZen Ultimate - Script Principal"""
+
+import click
+from config import BreakZenConfig
+
+@click.group()
+def cli():
+    """BreakZen Ultimate - Trading System"""
+    pass
+
+@cli.command()
+@click.option('--profile', default='intermediaire')
+def init(profile):
+    """Initialiser configuration"""
+    config = BreakZenConfig()
+    config.get_profile(profile)
+    print(f"✅ Configuration initialisée: {profile}")
+
+@cli.command()
+def status():
+    """Afficher statut système"""
+    config = BreakZenConfig()
+    config.print_summary()
+
+@cli.command()
+def scrape():
+    """Lancer scraper économique"""
+    print("📊 Module scraper à implémenter...")
+    print("Voir: modules/scrapers/economic_scraper.py")
+
+@cli.command()
+def analyze():
+    """Analyser charts"""
+    print("📈 Module analyse à implémenter...")
+
+@cli.command()
+def trade():
+    """Lancer trading automatique"""
+    print("🤖 Module trading à implémenter...")
+
+if __name__ == "__main__":
+    cli()
+'''
+
+create_file("main.py", main_py)
+
+# 4. .ENV TEMPLATE
+env_content = """# BreakZen Ultimate - Variables d'Environnement
+
+# Nextcloud Kaflow
+NEXTCLOUD_URL=https://ton-instance.kaflow.com
+NEXTCLOUD_USERNAME=negus_dja
+NEXTCLOUD_PASSWORD=ton_mot_de_passe
+
+# MetaTrader 5
+MT5_ACCOUNT=12345678
+MT5_PASSWORD=ton_password_mt5
+MT5_SERVER=NomServeur-Demo
+
+# Telegram (optionnel)
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+
+# Dashboard (optionnel)
+SECRET_KEY=genere_une_cle_secrete
+"""
+
+create_file(".env.template", env_content)
+
+# 5. .GITIGNORE
+gitignore = """__pycache__/
+*.py[cod]
+venv/
+.env
+config.json
+*.db
+logs/
+data/
+backups/
+.DS_Store
+"""
+
+create_file(".gitignore", gitignore)
+
+# 6. README.MD
+readme = """# 🎯 BreakZen Ultimate - Python Edition
+
+Système de trading automatisé développé par Négus Dja (Guadeloupe 🇬🇵)
+
+## 🚀 Installation Rapide
+
+```bash
+# 1. Installer dépendances
+pip install -r requirements.txt
+
+# 2. Copier et configurer .env
+cp .env.template .env
+# Éditer .env avec tes identifiants
+
+# 3. Initialiser
+python main.py init --profile intermediaire
+
+# 4. Tester
+python main.py status
+```
+
+## 📊 Modules Disponibles
+
+### ✅ Module 1: Données Économiques
+- Scraping ForexFactory
+- Calcul corrélations paires
+- Upload Nextcloud
+
+**Fichier:** `modules/scrapers/economic_scraper.py`
+
+### ⏳ Module 2: Analyse Technique (À venir)
+- 7 indicateurs (RSI, Ichimoku, Wyckoff, BB, OB, FVG, Trend)
+- Système confluence 0-7
+- Génération signaux
+
+### ⏳ Module 3: Trading Engine (À venir)
+- Connexion MT5
+- Trading automatique
+- Risk management
+
+### ⏳ Module 4: Dashboard Web (À venir)
+- Interface React
+- API FastAPI
+- Monitoring temps réel
+
+## 🎯 Profils Trading
+
+**Débutant** (Risk 0.5%):
+```bash
+python main.py init --profile debutant
+```
+
+**Intermédiaire** (Risk 1.5%) - Recommandé:
+```bash
+python main.py init --profile intermediaire
+```
+
+**Avancé** (Risk 2.5%):
+```bash
+python main.py init --profile avance
+```
+
+## 📚 Documentation
+
+- `INSTALLATION.md` - Guide installation complet
+- `DEMARRAGE_RAPIDE.md` - Guide 5 minutes
+- Docstrings dans le code
+
+## 🆘 Support
+
+Site: **deuzy.xyz**  
+Développé par: Négus Dja 🇬🇵
+
+## 📜 Licence
+
+Usage personnel uniquement. Pas de redistribution commerciale.
+
+---
+
+**Bon trading ! 🚀💰**
+"""
+
+create_file("README.md", readme)
+
+# 7. SCRIPTS LANCEMENT
+
+# Windows
+run_bat = """@echo off
+echo ========================================
+echo  BREAKZEN ULTIMATE
+echo ========================================
+
+if "%1"=="" (
+    python main.py status
+) else (
+    python main.py %*
+)
+
+pause
+"""
+
+create_file("run.bat", run_bat)
+
+# Linux/Mac
+run_sh = """#!/bin/bash
+echo "========================================"
+echo " BREAKZEN ULTIMATE"
+echo "========================================"
+
+if [ $# -eq 0 ]; then
+    python3 main.py status
+else
+    python3 main.py "$@"
+fi
+"""
+
+create_file("run.sh", run_sh)
+
+# Rendre exécutable (si sur Linux/Mac)
+try:
+    Path("run.sh").chmod(0o755)
+except:
+    pass
+
+# 8. STRUCTURE DOSSIERS
+folders = [
+    "modules/scrapers",
+    "modules/indicators", 
+    "modules/trading",
+    "modules/dashboard",
+    "data/economic",
+    "data/charts",
+    "data/analyses",
+    "logs",
+    "reports",
+    "backups",
+    "tests"
+]
+
+for folder in folders:
+    path = Path(folder)
+    path.mkdir(parents=True, exist_ok=True)
+    
+    # __init__.py pour modules
+    if "modules" in folder:
+        (path / "__init__.py").write_text("")
+
+print("\n📁 Structure dossiers créée")
+
+# 9. INSTALLATION.MD
+install_md = """# 📦 Guide Installation
+
+## Prérequis
+
+- Python 3.8+
+- pip
+- Connexion internet
+
+## Installation
+
+### 1. Environnement Virtuel (Recommandé)
+
+```bash
+# Windows
+python -m venv venv
+venv\\Scripts\\activate
+
+# Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 2. Dépendances
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configuration
+
+```bash
+# Copier template
+cp .env.template .env
+
+# Éditer .env
+nano .env  # ou ton éditeur
+```
+
+Remplir:
+- NEXTCLOUD_URL, USERNAME, PASSWORD
+- MT5_ACCOUNT, PASSWORD, SERVER
+
+### 4. Initialisation
+
+```bash
+python main.py init --profile intermediaire
+```
+
+### 5. Test
+
+```bash
+python main.py status
+```
+
+## Utilisation
+
+```bash
+# Via script
+run.bat status     # Windows
+./run.sh status    # Linux/Mac
+
+# Direct
+python main.py status
+python main.py scrape
+```
+
+## Problèmes Courants
+
+### Python introuvable
+```bash
+python3 au lieu de python
+```
+
+### Permission denied (Linux/Mac)
+```bash
+chmod +x run.sh
+```
+
+### TA-Lib erreur
+```bash
+pip install ta  # Alternative
+```
+
+## Support
+
+Site: deuzy.xyz
+"""
+
+create_file("INSTALLATION.md", install_md)
+
+# 10. DEMARRAGE_RAPIDE.MD
+quick_md = """# ⚡ Démarrage Rapide
+
+## 3 Étapes - 5 Minutes
+
+### 1. Installer (2 min)
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Configurer (2 min)
+
+```bash
+cp .env.template .env
+nano .env  # Remplir identifiants
+```
+
+### 3. Tester (1 min)
+
+```bash
+python main.py init --profile intermediaire
+python main.py status
+```
+
+## ✅ Prêt !
+
+Commandes:
+```bash
+python main.py status   # Statut
+python main.py scrape   # Données économiques
+python main.py analyze  # Analyse (à venir)
+python main.py trade    # Trading (à venir)
+```
+
+## Scripts Rapides
+
+Windows: `run.bat status`  
+Linux/Mac: `./run.sh status`
+
+---
+
+**C'est tout ! 🚀**
+"""
+
+create_file("DEMARRAGE_RAPIDE.md", quick_md)
+
+# ═══════════════════════════════════════════════════════════════
+# FINALISATION
+# ═══════════════════════════════════════════════════════════════
+
+print("\n" + "="*70)
+print("🎉 PACKAGE BREAKZEN ULTIMATE GÉNÉRÉ !")
+print("="*70)
+print("\n📦 Fichiers créés:")
+print("  ✅ requirements.txt")
+print("  ✅ config.py")
+print("  ✅ main.py")
+print("  ✅ .env.template")
+print("  ✅ .gitignore")
+print("  ✅ README.md")
+print("  ✅ run.bat / run.sh")
+print("  ✅ INSTALLATION.md")
+print("  ✅ DEMARRAGE_RAPIDE.md")
+print("  ✅ Structure dossiers")
+
+print("\n🎯 Prochaines étapes:")
+print("  1. cp .env.template .env")
+print("  2. Éditer .env avec tes identifiants")
+print("  3. pip install -r requirements.txt")
+print("  4. python main.py init")
+print("  5. python main.py status")
+
+print("\n💡 Pour modules avancés, copier depuis artifacts:")
+print("  - economic_scraper.py → modules/scrapers/")
+print("  - Plus de modules à venir...")
+
+print("\n✅ Système prêt ! Bon trading ! 🚀\n")

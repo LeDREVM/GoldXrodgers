@@ -1,0 +1,415 @@
+"""
+BreakZen Ultimate - Configuration Centrale Python
+Développé par Négus Dja - Guadeloupe 🇬🇵
+"""
+
+import os
+from pathlib import Path
+from dataclasses import dataclass
+from typing import List, Dict
+from datetime import datetime
+
+# ═══════════════════════════════════════════════════════════════
+#  CONFIGURATION GLOBALE
+# ═══════════════════════════════════════════════════════════════
+
+@dataclass
+class NextcloudConfig:
+    """Configuration Nextcloud Kaflow"""
+    url: str = "https://ledream.kflw.io"
+    username: str = "negus_dja"
+    password: str = ""  # À remplir
+    base_path: str = "/Trading"
+    
+    # Dossiers Nextcloud
+    economic_data_path: str = "/Trading/economic_data"
+    charts_path: str = "/Trading/charts"
+    analyses_path: str = "/Trading/analyses"
+    correlations_path: str = "/Trading/correlations"
+    backups_path: str = "/Trading/backups"
+
+
+@dataclass
+class TradingConfig:
+    """Configuration Trading"""
+    # Gestion du risque
+    risk_percent: float = 1.5
+    max_daily_loss: float = 4.0
+    max_trades_per_day: int = 4
+    min_risk_reward: float = 2.0
+    
+    # Session NY (Guadeloupe GMT-4)
+    trade_ny_only: bool = True
+    ny_start_hour: int = 9  # 9h30 EST = 9h30 locale Guadeloupe
+    ny_end_hour: int = 16   # 16h EST = 16h locale Guadeloupe
+    trade_premarket: bool = False
+    
+    # Timeframes
+    primary_timeframe: str = "1h"
+    higher_timeframe: str = "4h"
+    lower_timeframe: str = "15m"
+    
+    # Confluence
+    min_confluence_score: int = 5
+    require_all_indicators: bool = False
+    use_trend_filter: bool = True
+    
+    # Indicateurs activés
+    use_rsi: bool = True
+    use_ichimoku: bool = True
+    use_volume: bool = True
+    use_bollinger: bool = True
+    use_order_blocks: bool = True
+    use_fvg: bool = True
+
+
+@dataclass
+class BrokerConfig:
+    """Configuration Broker MT5"""
+    account: int = 0  # Numéro compte MT5
+    password: str = ""
+    server: str = ""
+    path_mt5: str = ""  # Chemin installation MT5
+    
+    # Paires à trader
+    symbols: List[str] = None
+    
+    def __post_init__(self):
+        if self.symbols is None:
+            self.symbols = [
+                "EURUSD", "GBPUSD", "USDJPY", "AUDUSD",
+                "XAUUSD"  # Gold
+            ]
+
+
+@dataclass
+class IndicatorConfig:
+    """Configuration Indicateurs"""
+    # RSI
+    rsi_period: int = 14
+    rsi_overbought: float = 70
+    rsi_oversold: float = 30
+    rsi_divergence_bars: int = 50
+    
+    # Ichimoku
+    tenkan_period: int = 9
+    kijun_period: int = 26
+    senkou_span_b: int = 52
+    
+    # Bollinger
+    bb_period: int = 20
+    bb_deviation: float = 2.0
+    bb_squeeze_threshold: float = 0.001
+    
+    # Wyckoff
+    wyckoff_volume_period: int = 20
+    wyckoff_effort_threshold: float = 1.5
+    
+    # Order Blocks
+    ob_lookback_bars: int = 100
+    ob_min_size_pips: float = 50
+    ob_validation_bars: int = 3
+    
+    # FVG
+    fvg_min_gap_pips: float = 30
+    fvg_max_age_bars: int = 50
+
+
+@dataclass
+class EconomicDataConfig:
+    """Configuration Données Économiques"""
+    # Sources
+    use_forexfactory: bool = True
+    use_investing: bool = True
+    use_myfxbook: bool = False
+    
+    # Filtres
+    min_impact: str = "Medium"  # Low, Medium, High
+    currencies: List[str] = None
+    
+    # Fréquence mise à jour
+    update_interval_hours: int = 1
+    
+    # Corrélations
+    correlation_period_days: int = 30
+    correlation_threshold: float = 0.7
+    
+    def __post_init__(self):
+        if self.currencies is None:
+            self.currencies = ["USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "NZD"]
+
+
+@dataclass
+class DashboardConfig:
+    """Configuration Dashboard Web"""
+    host: str = "0.0.0.0"
+    port: int = 8000
+    debug: bool = False
+    
+    # Frontend
+    frontend_url: str = "https://deuzy.xyz"
+    api_prefix: str = "/api/v1"
+    
+    # WebSocket
+    enable_websocket: bool = True
+    websocket_update_interval: int = 5  # secondes
+    
+    # Authentification
+    enable_auth: bool = True
+    secret_key: str = ""  # À générer
+    jwt_expiration_hours: int = 24
+
+
+@dataclass
+class NotificationConfig:
+    """Configuration Notifications"""
+    # Telegram
+    enable_telegram: bool = False
+    telegram_token: str = ""
+    telegram_chat_id: str = ""
+    
+    # Email
+    enable_email: bool = False
+    smtp_server: str = ""
+    smtp_port: int = 587
+    email_from: str = ""
+    email_to: str = ""
+    email_password: str = ""
+    
+    # Discord (optionnel)
+    enable_discord: bool = False
+    discord_webhook: str = ""
+    
+    # Types notifications
+    notify_trade_open: bool = True
+    notify_trade_close: bool = True
+    notify_daily_summary: bool = True
+    notify_errors: bool = True
+
+
+@dataclass
+class LoggingConfig:
+    """Configuration Logs"""
+    log_level: str = "INFO"  # DEBUG, INFO, WARNING, ERROR
+    log_to_file: bool = True
+    log_to_console: bool = True
+    log_dir: str = "logs"
+    
+    # Rotation
+    max_log_size_mb: int = 10
+    backup_count: int = 5
+    
+    # Logs spécifiques
+    log_trades: bool = True
+    log_analyses: bool = True
+    log_api_calls: bool = False
+
+
+# ═══════════════════════════════════════════════════════════════
+#  CLASSE CONFIGURATION PRINCIPALE
+# ═══════════════════════════════════════════════════════════════
+
+class BreakZenConfig:
+    """Configuration principale BreakZen Ultimate"""
+    
+    def __init__(self, config_path: str = "config.json"):
+        self.config_path = Path(config_path)
+        
+        # Initialisation modules
+        self.nextcloud = NextcloudConfig()
+        self.trading = TradingConfig()
+        self.broker = BrokerConfig()
+        self.indicators = IndicatorConfig()
+        self.economic = EconomicDataConfig()
+        self.dashboard = DashboardConfig()
+        self.notifications = NotificationConfig()
+        self.logging = LoggingConfig()
+        
+        # Chemins projets
+        self.base_dir = Path(__file__).parent
+        self.data_dir = self.base_dir / "data"
+        self.models_dir = self.base_dir / "models"
+        self.reports_dir = self.base_dir / "reports"
+        
+        # Créer dossiers si nécessaire
+        self._create_directories()
+        
+        # Charger config si existe
+        if self.config_path.exists():
+            self.load()
+    
+    def _create_directories(self):
+        """Créer structure dossiers"""
+        for directory in [self.data_dir, self.models_dir, self.reports_dir]:
+            directory.mkdir(parents=True, exist_ok=True)
+    
+    def load(self):
+        """Charger configuration depuis JSON"""
+        import json
+        
+        if not self.config_path.exists():
+            return
+        
+        with open(self.config_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # Charger chaque section
+        for key, value in data.items():
+            if hasattr(self, key) and isinstance(value, dict):
+                config_obj = getattr(self, key)
+                for sub_key, sub_value in value.items():
+                    if hasattr(config_obj, sub_key):
+                        setattr(config_obj, sub_key, sub_value)
+    
+    def save(self):
+        """Sauvegarder configuration vers JSON"""
+        import json
+        from dataclasses import asdict
+        
+        data = {
+            'nextcloud': asdict(self.nextcloud),
+            'trading': asdict(self.trading),
+            'broker': asdict(self.broker),
+            'indicators': asdict(self.indicators),
+            'economic': asdict(self.economic),
+            'dashboard': asdict(self.dashboard),
+            'notifications': asdict(self.notifications),
+            'logging': asdict(self.logging),
+        }
+        
+        with open(self.config_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ Configuration sauvegardée: {self.config_path}")
+    
+    def get_profile(self, profile_name: str):
+        """Charger profil prédéfini"""
+        profiles = {
+            'debutant': {
+                'risk_percent': 0.5,
+                'max_daily_loss': 2.0,
+                'max_trades_per_day': 2,
+                'min_confluence_score': 6,
+                'min_risk_reward': 2.5
+            },
+            'intermediaire': {
+                'risk_percent': 1.5,
+                'max_daily_loss': 4.0,
+                'max_trades_per_day': 4,
+                'min_confluence_score': 5,
+                'min_risk_reward': 2.0
+            },
+            'avance': {
+                'risk_percent': 2.5,
+                'max_daily_loss': 6.0,
+                'max_trades_per_day': 6,
+                'min_confluence_score': 4,
+                'min_risk_reward': 1.5
+            }
+        }
+        
+        if profile_name.lower() in profiles:
+            profile = profiles[profile_name.lower()]
+            for key, value in profile.items():
+                setattr(self.trading, key, value)
+            print(f"✅ Profil '{profile_name}' chargé")
+        else:
+            print(f"❌ Profil '{profile_name}' inconnu")
+    
+    def validate(self) -> bool:
+        """Valider configuration"""
+        errors = []
+        
+        # Vérifier Nextcloud
+        if not self.nextcloud.password:
+            errors.append("⚠️ Nextcloud: Mot de passe manquant")
+        
+        # Vérifier Broker
+        if not self.broker.account or not self.broker.password:
+            errors.append("⚠️ Broker MT5: Identifiants manquants")
+        
+        # Vérifier risques
+        if self.trading.risk_percent > 5:
+            errors.append("⚠️ Trading: Risk > 5% (dangereux)")
+        
+        if self.trading.max_daily_loss > 10:
+            errors.append("⚠️ Trading: MaxDailyLoss > 10% (dangereux)")
+        
+        # Vérifier notifications
+        if self.notifications.enable_telegram and not self.notifications.telegram_token:
+            errors.append("⚠️ Notifications: Token Telegram manquant")
+        
+        # Afficher erreurs
+        if errors:
+            print("\n❌ ERREURS DE CONFIGURATION:")
+            for error in errors:
+                print(f"   {error}")
+            return False
+        
+        print("✅ Configuration valide")
+        return True
+    
+    def print_summary(self):
+        """Afficher résumé configuration"""
+        print("\n" + "="*60)
+        print("📊 BREAKZEN ULTIMATE - CONFIGURATION")
+        print("="*60)
+        
+        print("\n🎯 TRADING:")
+        print(f"   Risk par trade: {self.trading.risk_percent}%")
+        print(f"   Max loss journalier: {self.trading.max_daily_loss}%")
+        print(f"   Max trades/jour: {self.trading.max_trades_per_day}")
+        print(f"   Confluence min: {self.trading.min_confluence_score}/7")
+        
+        print("\n🕐 SESSION:")
+        print(f"   NY Only: {self.trading.trade_ny_only}")
+        print(f"   Horaires: {self.trading.ny_start_hour}h - {self.trading.ny_end_hour}h")
+        
+        print("\n📊 PAIRES:")
+        print(f"   {', '.join(self.broker.symbols)}")
+        
+        print("\n☁️  NEXTCLOUD:")
+        print(f"   URL: {self.nextcloud.url}")
+        print(f"   Path: {self.nextcloud.base_path}")
+        
+        print("\n🔔 NOTIFICATIONS:")
+        notif_active = []
+        if self.notifications.enable_telegram: notif_active.append("Telegram")
+        if self.notifications.enable_email: notif_active.append("Email")
+        if self.notifications.enable_discord: notif_active.append("Discord")
+        print(f"   Actives: {', '.join(notif_active) if notif_active else 'Aucune'}")
+        
+        print("\n" + "="*60 + "\n")
+
+
+# ═══════════════════════════════════════════════════════════════
+#  EXEMPLE D'UTILISATION
+# ═══════════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+    # Créer configuration
+    config = BreakZenConfig()
+    
+    # Charger profil débutant
+    config.get_profile('intermediaire')
+    
+    # Configurer Nextcloud (REMPLACER PAR TES INFOS)
+    config.nextcloud.url = "https://ton-instance.kaflow.com"
+    config.nextcloud.username = "negus_dja"
+    config.nextcloud.password = "ton_mot_de_passe"
+    
+    # Configurer Broker MT5
+    config.broker.account = 12345678
+    config.broker.password = "ton_password_mt5"
+    config.broker.server = "NomDuServeur-Demo"
+    
+    # Afficher résumé
+    config.print_summary()
+    
+    # Valider
+    if config.validate():
+        # Sauvegarder
+        config.save()
+        print("✅ Configuration prête à l'emploi !")
+    else:
+        print("❌ Corriger les erreurs avant de continuer")

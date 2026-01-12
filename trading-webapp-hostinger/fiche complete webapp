@@ -1,0 +1,146 @@
+trading-webapp-hostinger/
+├─ README.md
+├─ .gitignore
+├─ .env.example
+├─ package.json
+├─ package-lock.json
+├─ vite.config.ts
+├─ tsconfig.json
+├─ tsconfig.node.json
+├─ index.html
+│
+├─ public/
+│  ├─ favicon.ico
+│  ├─ robots.txt
+│  └─ assets/
+│     ├─ logo.svg
+│     └─ og-image.png
+│
+├─ src/
+│  ├─ main.tsx
+│  ├─ App.tsx
+│  ├─ styles/
+│  │  └─ globals.css
+│  │
+│  ├─ config/
+│  │  ├─ constants.ts
+│  │  ├─ instruments.ts
+│  │  └─ session.ts
+│  │
+│  ├─ lib/
+│  │  ├─ supabaseClient.ts
+│  │  ├─ date.ts
+│  │  ├─ format.ts
+│  │  ├─ risk.ts
+│  │  └─ validators.ts
+│  │
+│  ├─ types/
+│  │  ├─ trade.ts
+│  │  ├─ economicEvent.ts
+│  │  └─ supabase.ts
+│  │
+│  ├─ store/
+│  │  ├─ auth.store.ts
+│  │  ├─ trades.store.ts
+│  │  └─ ui.store.ts
+│  │
+│  ├─ routes/
+│  │  ├─ index.tsx
+│  │  ├─ auth/
+│  │  │  ├─ Login.tsx
+│  │  │  └─ Register.tsx
+│  │  ├─ dashboard/
+│  │  │  └─ Dashboard.tsx
+│  │  ├─ journal/
+│  │  │  └─ Journal.tsx
+│  │  ├─ settings/
+│  │  │  └─ Settings.tsx
+│  │  └─ NotFound.tsx
+│  │
+│  ├─ components/
+│  │  ├─ layout/
+│  │  │  ├─ AppShell.tsx
+│  │  │  ├─ TopBar.tsx
+│  │  │  ├─ SideNav.tsx
+│  │  │  └─ ProtectedRoute.tsx
+│  │  │
+│  │  ├─ dashboard/
+│  │  │  ├─ SessionClock.tsx
+│  │  │  ├─ Watchlist.tsx
+│  │  │  ├─ BiasPanel.tsx
+│  │  │  └─ MarketStatus.tsx
+│  │  │
+│  │  ├─ news/
+│  │  │  ├─ NewsGate.tsx
+│  │  │  ├─ EventsList.tsx
+│  │  │  └─ ImpactBadge.tsx
+│  │  │
+│  │  ├─ journal/
+│  │  │  ├─ TradeForm.tsx
+│  │  │  ├─ TradeList.tsx
+│  │  │  ├─ TradeCard.tsx
+│  │  │  ├─ TradeFilters.tsx
+│  │  │  ├─ ScreenshotUploader.tsx
+│  │  │  └─ TagsInput.tsx
+│  │  │
+│  │  ├─ stats/
+│  │  │  ├─ StatsSummary.tsx
+│  │  │  ├─ WinrateCard.tsx
+│  │  │  └─ RMultipleCard.tsx
+│  │  │
+│  │  └─ ui/
+│  │     ├─ Button.tsx
+│  │     ├─ Input.tsx
+│  │     ├─ Select.tsx
+│  │     ├─ Modal.tsx
+│  │     ├─ Badge.tsx
+│  │     ├─ Toast.tsx
+│  │     └─ Loader.tsx
+│  │
+│  ├─ services/
+│  │  ├─ auth.service.ts
+│  │  ├─ trades.service.ts
+│  │  ├─ storage.service.ts
+│  │  └─ events.service.ts
+│  │
+│  └─ hooks/
+│     ├─ useAuth.ts
+│     ├─ useTrades.ts
+│     ├─ useUpload.ts
+│     ├─ useSessionNY.ts
+│     └─ useToast.ts
+│
+├─ supabase/
+│  ├─ migrations/
+│  │  ├─ 001_init.sql
+│  │  ├─ 002_rls_policies.sql
+│  │  ├─ 003_storage_policies.sql
+│  │  └─ 004_seed_events.sql
+│  │
+│  ├─ policies/
+│  │  ├─ trades_rls.sql
+│  │  ├─ profiles_rls.sql
+│  │  └─ storage_rls.sql
+│  │
+│  └─ docs/
+│     ├─ supabase_setup.md
+│     ├─ rls_explained.md
+│     └─ storage_paths.md
+│
+├─ scripts/
+│  ├─ build_hostinger.sh
+│  ├─ verify_env.sh
+│  ├─ export_dist.ps1
+│  └─ seed_events_manual.csv
+│
+├─ hostinger/
+│  ├─ DEPLOY_HOSTINGER.md
+│  ├─ htaccess.example
+│  └─ redirects/
+│     └─ spa-routing.md
+│
+└─ docs/
+   ├─ product_spec.md
+   ├─ ux_wireflow.md
+   ├─ ny_session_rules.md
+   └─ roadmap_v2.md

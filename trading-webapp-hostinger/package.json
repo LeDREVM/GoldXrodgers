@@ -1,0 +1,29 @@
+{
+  "name": "trading-webapp-hostinger",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:prod": "NODE_ENV=production npm run build",
+    "preview": "vite preview --host",
+    "verify:env": "bash scripts/verify_env.sh",
+    "build:hostinger": "bash scripts/build_hostinger.sh",
+    "lint": "echo \"(optional) add eslint\" && exit 0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2"
+  }
+}
