@@ -1,8 +1,13 @@
-
 services:
   - type: web
-    name: goldyrogers
+    name: goldyrogers-dashboard
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn goldyrogers_dashboard_full:app
+    buildCommand: pip install -r requirements_flask.txt
+    startCommand: gunicorn goldyrogers_dashboard_full:app --bind 0.0.0.0:$PORT --workers 2 --threads 2 --timeout 120
     plan: free
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /
